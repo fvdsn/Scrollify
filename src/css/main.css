@@ -2,14 +2,6 @@
    HTML5 Boilerplate styles - h5bp.com (generated via initializr.com)
    ========================================================================== */
 
-html,
-button,
-input,
-select,
-textarea {
-    color: #222;
-}
-
 body {
     font-size: 1em;
     line-height: 1.4;
@@ -55,10 +47,58 @@ textarea {
     padding: 0.2em 0;
 }
 
+/* --------------------
+ *     SITE STYLE
+ * -------------------- */
 
-/* ==========================================================================
-   Author's custom styles
-   ========================================================================== */
+body{
+    background: black;
+    color: white;
+    text-align: center;
+}
+.image{
+    max-width: 50%;
+    display: block;
+    margin: 0px auto 100px auto;
+    border-radius: 2px;
+}
+.big-play{
+    display: inline-block;
+    color: white;
+    font-size: 48px;
+    height: 48px;
+    line-height: 48px;
+    width: 48px;
+    margin: 30px;
+    margin-bottom: 50px;
+    cursor: pointer;
+    border-radius: 24px;
+    background: rgba(255,255,255,0.2);
+    opacity: 0.4;
+    -webkit-transition: all 250ms linear;
+}
+.big-play:hover{
+    opacity: 0.8;
+}
+.controls{
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    background: black;
+    color: white;
+    text-align: center;
+}
+.controls .control{
+    display: inline-block;
+    height: 32px;
+    width: 32px;
+    font-size: 24px;
+    color: white;
+    line-height: 32px;
+    cursor: pointer;
+}
+
 
 
 
@@ -150,6 +190,11 @@ textarea {
 .clearfix {
     *zoom: 1;
 }
+
+
+
+
+
 
 /* ==========================================================================
    Print styles

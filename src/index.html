@@ -6,7 +6,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title></title>
+        <title>Scrollify !</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
 
@@ -23,7 +23,17 @@
             <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
         <![endif]-->
 
-        <p>Hello world! This is HTML5 Boilerplate.</p>
+        <h1>Scrollify !</h1>
+        <span class='big-play js-play'>‣</span>
+        <nav class='controls'>
+            <span class='control js-play'>‣</span>
+            <span class='control js-stop'>▪</span>
+        </nav>
+
+        % for i in range(33):
+          <img class='image' src='img/onepunch/onepunch_${i}.gif'>
+        % endfor
+            
 
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
