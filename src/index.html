@@ -1,51 +1,69 @@
-<!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>Scrollify !</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width">
+<%inherit file='layout.mako' />
 
-        <link rel="stylesheet" href="css/normalize.min.css">
-        <link rel="stylesheet" href="css/main.css">
+<%block name='content'>
 
-        <!--[if lt IE 9]>
-            <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-            <script>window.html5 || document.write('<script src="js/vendor/html5shiv.js"><\/script>')</script>
-        <![endif]-->
-    </head>
-    <body>
-        <!--[if lt IE 7]>
-            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
-        <![endif]-->
+    <%
+    import pickle
+    import re
+    import os
 
-        <h1>Scrollify !</h1>
+    player = False
+    if 'v' in request.params:
+        player = True
+        file = request.params['v']
+        file = re.sub('[^A-Za-z0-9]+','',file)
+        dir  = 'data/'+file+'/'
+        list = []
+        if os.path.exists(dir+'_frames.pickle'):
+            with open(dir+'_frames.pickle') as frames:
+                list = pickle.load(frames)    
+        else:
+            #TODO raise error
+            pass
+    else:
+        gallery = []
+        if os.path.exists('data/_gallery.pickle'):
+            with open('data/_gallery.pickle') as gallery_file:
+                gallery = pickle.load(gallery_file)
+    %>
+    % if player:
+
+        <h1><a href='/'>Scrollify !</a></h1>
         <span class='big-play js-play'>‣</span>
         <nav class='controls'>
             <span class='control js-play'>‣</span>
             <span class='control js-stop'>▪</span>
         </nav>
-
-        % for i in range(33):
-          <img class='image' src='img/onepunch/onepunch_${i}.gif'>
+        % for i in list:
+          <img class='image' id='${i}' src="${dir+i}">
         % endfor
-            
 
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+        <%block name='js'>
+            <script src="js/main.js"></script>
+        </%block>
 
-        <script src="js/plugins.js"></script>
-        <script src="js/main.js"></script>
+    % else:
 
-        <script>
-            var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
-            (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-            g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
-            s.parentNode.insertBefore(g,s)}(document,'script'));
-        </script>
-    </body>
-</html>
+        <header class='homepage-header'>
+            <h1><a href='/'>Scrollify !</a></h1>
+
+            <form class='scrollify-upload' 
+                  action='/upload.html' 
+                  method='post' 
+                  enctype='multipart/form-data'>
+                <input type='file' name='file' />
+                <input type='submit' value='Scrollify !' />
+            </form>
+        </header>
+
+        <nav class='gallery'>
+            % for thumb in gallery:
+                <a href='?v=${thumb}' class='thumbnail'>
+                    <img src='data/${thumb}/thumb.png'>
+                </a>
+            % endfor
+        </nav>
+
+    % endif
+</%block>
+

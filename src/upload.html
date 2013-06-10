@@ -1,0 +1,82 @@
+<%inherit file='layout.mako' />
+
+<%block name='content'>
+    <%
+    import os
+    import time
+    import subprocess
+    import pickle
+
+
+    ALPHABET = '01234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    
+    def encode(num):
+        if(num == 0):
+            return ALPHABET[0]
+        arr = []
+        base = len(ALPHABET)
+        while num:
+            rem = num % base
+            num = num // base
+            arr.append(ALPHABET[rem])
+        return ''.join(arr)
+    
+    def uniqueid():
+        return encode(int(time.time()*10000)) 
+    
+    data = request.files.file
+    success = False
+
+    if data and data.file:
+        raw = data.file.read()
+        filename = data.filename
+        ext = '.' + filename.split('.')[-1].lower()
+        id = uniqueid()
+        dir = 'data/'+id+'/'
+        if not os.path.exists(dir):
+            os.makedirs(dir)
+
+        success = True
+        with open(dir + '_media' + ext,'w') as open_file:
+            open_file.write(raw)
+
+        if ext == '.gif' :
+            cmd = "convert " +dir+'_media'+ext+' -coalesce '+dir+'%03d'+'.png'
+            print cmd
+            subprocess.call(cmd,shell=True)
+        else:
+            cmd = "ffmpeg -i "+dir+'_media'+ext+' -s 480x300 -r 1 -f image2 '+dir+'%03d'+'.jpg'
+            print cmd
+            subprocess.call(cmd,shell=True)
+
+        with open(dir + '_frames.pickle','w') as frame_file:
+            frames = os.listdir(dir)
+            if '_media'+ext in frames:
+                frames.remove('_media'+ext) 
+            if '_frames.pickle' in frames:
+                frames.remove('_frames.pickle') 
+            frames.sort()
+            pickle.dump(frames,frame_file)
+            
+            thumbnail = frames[len(frames)/2]
+            cmd = 'convert '+dir+thumbnail+' -resize 184x144 '+dir+'thumb.png'
+            print cmd
+            subprocess.call(cmd,shell=True)
+
+        gallery = []
+        if os.path.exists('data/_gallery.pickle'):
+            with open('data/_gallery.pickle') as gallery_file:
+                gallery = pickle.load(gallery_file)
+
+        with open('data/_gallery.pickle','w') as gallery_file:
+            gallery.insert(0,id)
+            pickle.dump(gallery,gallery_file)
+        
+    %>
+    % if success:
+        File Uploaded: <a href='/?v=${id}'> GO TO FILE </a>
+        <script>window.location = '/?v=${id}';</script>
+    % else:
+        File Failed to Upload :(
+    % endif
+</%block>
