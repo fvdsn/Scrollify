@@ -6,6 +6,9 @@
     import pickle
     import re
     import os
+    import bottle
+    
+    request = bottle.request
 
     player = False
     if 'v' in request.params:
